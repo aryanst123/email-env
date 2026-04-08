@@ -1,0 +1,5 @@
+name: email-env
+description: email triage environment
+version: 0.1
+
+entrypoint: server:app
