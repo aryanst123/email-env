@@ -1,16 +1,22 @@
 import os
+from typing import List, Optional
 from openai import OpenAI
 
-API_BASE_URL = os.getenv("API_BASE_URL")
-MODEL_NAME = os.getenv("MODEL_NAME")
-API_KEY = os.getenv("OPENAI_API_KEY")
+# REQUIRED ENV VARIABLES
+API_BASE_URL = os.getenv("API_BASE_URL", "http://localhost:7860")
+MODEL_NAME = os.getenv("MODEL_NAME", "gpt-4o-mini")
+HF_TOKEN = os.getenv("HF_TOKEN")  # NO default
+
+client = OpenAI(base_url=API_BASE_URL, api_key=HF_TOKEN)
 
 
-def log_start(task, env, model):
+def log_start(task: str, env: str, model: str) -> None:
     print(f"[START] task={task} env={env} model={model}", flush=True)
 
 
-def log_step(step, action, reward, done, error):
+def log_step(
+    step: int, action: str, reward: float, done: bool, error: Optional[str]
+) -> None:
     error_val = error if error else "null"
     done_val = str(done).lower()
     print(
@@ -19,7 +25,7 @@ def log_step(step, action, reward, done, error):
     )
 
 
-def log_end(success, steps, score, rewards):
+def log_end(success: bool, steps: int, score: float, rewards: List[float]) -> None:
     rewards_str = ",".join(f"{r:.2f}" for r in rewards)
     print(
         f"[END] success={str(success).lower()} steps={steps} score={score:.3f} rewards={rewards_str}",
@@ -28,19 +34,21 @@ def log_end(success, steps, score, rewards):
 
 
 def main():
-    client = OpenAI(base_url=API_BASE_URL, api_key=API_KEY)
-
     log_start("email_task", "EmailEnv", MODEL_NAME)
 
-    rewards = []
+    rewards: List[float] = []
     steps = 0
 
     for i in range(5):
+        action = "DELETE"
+
         reward = 0.1
+        done = i == 4
+
         rewards.append(reward)
         steps += 1
 
-        log_step(steps, "dummy_action", reward, i == 4, None)
+        log_step(steps, action, reward, done, None)
 
     score = sum(rewards)
 
