@@ -1,5 +1,15 @@
 name: email-env
-description: email triage environment
-version: 0.1
+version: 1.0.0
 
-entrypoint: server:app
+description: >
+  A realistic email management environment where an agent must classify,
+  prioritize, and decide actions for incoming emails.
+tasks:
+  - id: spam_detection
+    description: Identify and remove spam or promotional emails.
+
+  - id: important_email
+    description: Detect important or time-sensitive emails.
+
+  - id: reply_generation
+    description: Decide whether a reply is needed for an email.
